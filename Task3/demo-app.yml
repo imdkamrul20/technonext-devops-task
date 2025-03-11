@@ -19,7 +19,7 @@ spec:
         effect: "NoSchedule"
       containers:
       - name: demo-app
-        image: your-dockerhub-username/devops-app:v1
+        image: kamrulislam/devops-app:latest
         ports:
         - containerPort: 3000
         env:
