@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo-app
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+      tolerations:
+      - key: "app"
+        operator: "Equal"
+        value: "critical"
+        effect: "NoSchedule"
+      containers:
+      - name: demo-app
+        image: your-dockerhub-username/devops-app:v1
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MONGO_URI
+          value: "mongodb://mongouser:mongopass@mongodb-service:27017/demo"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: app-storage
+          mountPath: /app/data
+      volumes:
+      - name: app-storage
+        persistentVolumeClaim:
+          claimName: app-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-app-service
+spec:
+  selector:
+    app: demo-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  type: ClusterIP

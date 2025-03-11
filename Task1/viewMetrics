@@ -1,0 +1,42 @@
+Set Up Metrics & Monitoring
+ 
+ Install Prometheus & Grafana
+
+  Create a monitoring namespace:
+  $ kubectl create namespace monitoring
+
+Deploy Prometheus
+ 
+ $ kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/bundle.yaml -n monitoring
+
+Deploy Grafana
+ $ kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/grafana.yaml -n monitoring
+
+Expose nodePort for accessing Grafana UI
+
+grafana-service.yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+    name: grafana
+    namespace: monitoring
+    spec:
+    type: NodePort
+    selector:
+        app: grafana
+    ports:
+        - protocol: TCP
+        port: 3000       
+        targetPort: 3000 
+        nodePort: 32000  
+
+Or Port-forward to access Grafana UI:
+
+ $ kubectl port-forward svc/grafana 3000:80 -n monitoring
+
+Access Grafana at http://localhost:32000 or http://localhost:80 ( login using user and password).
+
+################View CPU & Memory Metrics in Grafana#############################
+
+1. In Grafana, add a Prometheus data source (http://prometheus:9090).
+2. Import or create metrics dashboard from Grafana’s dashboard repository (Dashborad: viewDashboard.json)

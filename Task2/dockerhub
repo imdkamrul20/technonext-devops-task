@@ -1,0 +1,7 @@
+Build image
+
+ $ docker build -t kamrul/devops-app:latest .
+
+Push the Image to Docker Hub
+
+ $ docker push kamrul/devops-app:latest

@@ -1,0 +1,41 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: apiserver
+      folder: K8s API SERVER
+      interval: 2m
+      rules:
+        - uid: bbf149bc-ba7d-4280-a64f-201bd60cc8fe
+          title: apiserver
+          condition: A
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 300
+                to: 0
+              datasourceUid: b0981503-7f52-4995-a599-a348c7eb6257
+              model:
+                datasource:
+                    type: prometheus
+                    uid: b0981503-7f52-4995-a599-a348c7eb6257
+                editorMode: code
+                expr: up{job=~"kubernetes-apiservers|apiserver"} == 0
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+          dashboardUid: k8s_system_apisrv
+          panelId: 42
+          noDataState: OK
+          execErrState: OK
+          for: 0s
+          annotations:
+            __dashboardUid__: k8s_system_apisrv
+            __panelId__: "42"
+            summary: 'APIServers down: {{ $labels.instance }}'
+          labels:
+            severity: '{{if gt $values.A.Value 0.0 }} critical {{else}} normal {{end}}'
+            type: apiserver-status
+          isPaused: false
